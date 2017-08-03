@@ -21,12 +21,25 @@ function streamToJsonValue (res, cb) {
     }
 
     let res
+	  let error
     try {
       res = JSON.parse(data)
     } catch (err) {
-      return cb(err)
+	    error = err
     }
 
+    if (res == null && error != null) {
+      error = null
+      try {
+        res = JSON.parse(String.fromCharCode.apply(null, data))
+      } catch (err) {
+        error = err
+      }
+    }
+	
+	  if (error) {
+      return cb(error)
+    }
     cb(null, res)
   })
 }
